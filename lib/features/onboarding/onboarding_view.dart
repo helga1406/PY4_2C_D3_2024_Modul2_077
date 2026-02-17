@@ -9,14 +9,14 @@ class OnboardingView extends StatefulWidget {
 }
 
 class _OnboardingViewState extends State<OnboardingView> {
-  int step = 1; // Variabel untuk melacak langkah onboarding [cite: 109]
+  int step = 1; 
 
   void _nextStep() {
     setState(() {
       if (step < 3) {
-        step++; // Tambah langkah [cite: 110]
+        step++; 
       } else {
-        // Jika sudah langkah ke-3, pindah ke Login [cite: 110]
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const LoginView()),
