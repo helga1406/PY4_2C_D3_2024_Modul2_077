@@ -1,8 +1,5 @@
-// login_view.dart
 import 'package:flutter/material.dart';
-// Import Controller milik sendiri (masih satu folder)
 import 'package:logbook_app_077/features/auth/login_controller.dart';
-// Import View dari fitur lain (Logbook) untuk navigasi
 import 'package:logbook_app_077/features/logbook/counter_view.dart';
 
 class LoginView extends StatefulWidget {
@@ -12,14 +9,24 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  // Inisialisasi Otak dan Controller Input
+
   final LoginController _controller = LoginController();
   final TextEditingController _userController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
 
+  bool _isObscure = true; // Variabel untuk mengontrol visibilitas password
+
   void _handleLogin() {
     String user = _userController.text;
     String pass = _passController.text;
+
+    // 1. Validasi Kosong 
+    if (user.isEmpty || pass.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Username dan Password tidak boleh kosong!")),
+      );
+      return;
+    }
 
     bool isSuccess = _controller.login(user, pass);
 
@@ -27,14 +34,22 @@ class _LoginViewState extends State<LoginView> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          // Di sini kita kirimkan variabel 'user' ke parameter 'username' di CounterView
           builder: (context) => CounterView(username: user),
         ),
       );
     } else {
+      int sisa = 3 - _controller.attempts;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Login Gagal! Gunakan admin/123")),
+        SnackBar(content: Text("Login Gagal! Sisa percobaan: ${sisa > 0 ? sisa : 0}")),
       );
+
+      if (_controller.isLocked) {
+        Future.delayed(const Duration(seconds: 10), () {
+          if (mounted) setState(() {}); // Tombol akan jadi aktif lagi otomatis di layar
+        });
+      }
+
+      setState(() {});
     }
   }
 
@@ -48,18 +63,40 @@ class _LoginViewState extends State<LoginView> {
           children: [
             TextField(
               controller: _userController,
-              decoration: const InputDecoration(labelText: "Username"),
+              decoration: const InputDecoration(
+                labelText: "Username",
+                border: OutlineInputBorder(),
+              ),
             ),
+            const SizedBox(height: 15),
             TextField(
               controller: _passController,
-              obscureText: true, // Menyembunyikan teks password
-              decoration: const InputDecoration(labelText: "Password"),
+              obscureText: _isObscure, // Mengikuti status variabel _isObscure
+              decoration: InputDecoration(
+                labelText: "Password",
+                border: const OutlineInputBorder(),
+
+                // 3. Tambahkan IconButton untuk toggle visibilitas password
+                suffixIcon: IconButton(
+                  icon: Icon(_isObscure ? Icons.visibility_off : Icons.visibility),
+                  onPressed: () {
+                    setState(() {
+                      _isObscure = !_isObscure;
+                    });
+                  },
+                ),
+              ),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(onPressed: _handleLogin, child: const Text("Masuk")),
+            // 4. Tombol otomatis mati jika isLocked true 
+            ElevatedButton(
+              onPressed: _controller.isLocked ? null : _handleLogin,
+              child: Text(_controller.isLocked ? "Terkunci (10 detik)" : "Masuk"),
+            ),
           ],
         ),
       ),
     );
   }
 }
+
