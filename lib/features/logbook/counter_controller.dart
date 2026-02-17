@@ -1,48 +1,31 @@
-class CounterController {
-  int _counter = 0;
-  int _step = 1; 
-  
-  // List untuk menyimpan riwayat
-  final List<String> _history = []; 
+import 'package:shared_preferences/shared_preferences.dart';
 
-  // Getter
-  int get value => _counter;
-  int get step => _step;
+class CounterController {
+  int _value = 0;
+  List<String> _history = [];
+
+  int get value => _value;
   List<String> get history => _history;
 
-  // Fungsi set step dari Slider
-  void setStep(int s) => _step = s;
+  // 1. Fungsi Membaca Data 
+  Future<void> loadData() async {
+    final prefs = await SharedPreferences.getInstance();
+    _value = prefs.getInt('last_counter') ?? 0;
+    _history = prefs.getStringList('counter_history') ?? [];
+  }
 
-  // --- LOGIKA RIWAYAT ---
-  void _addHistory(String aksi) {
-
-    DateTime now = DateTime.now();
-    String jam = "${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}";
+  // 2. Fungsi Menambah & Menyimpan Data 
+  Future<void> increment(String username) async {
+    _value++;
     
-    String pesan = "$aksi (Jam $jam)";
+    DateTime now = DateTime.now();
+    String timeStr = "${now.hour}:${now.minute.toString().padLeft(2, '0')}";
+    String logEntry = "User $username menambah ke $_value pada jam $timeStr";
+    
+    _history.insert(0, logEntry);
 
-    _history.insert(0, pesan);
-  
-    if (_history.length > 5) {
-      _history.removeLast();
-    }
-  }
-
-  // --- LOGIKA TOMBOL ---
-  void increment() {
-    _counter += _step;
-    _addHistory("user menambah $_step");
-  }
-
-  void decrement() {
-    if (_counter > 0) {
-      _counter -= _step;
-      _addHistory("user mengurangi $_step");
-    }
-  }
-
-  void reset() {
-    _counter = 0;
-    _addHistory("Data di-reset");
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('last_counter', _value);
+    await prefs.setStringList('counter_history', _history);
   }
 }

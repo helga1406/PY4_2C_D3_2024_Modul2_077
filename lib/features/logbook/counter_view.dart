@@ -14,33 +14,41 @@ class _CounterViewState extends State<CounterView> {
   final CounterController _controller = CounterController();
 
   @override
+  void initState() {
+    super.initState();
+    _initData();
+  }
+
+  // Fungsi async
+  void _initData() async {
+    await _controller.loadData();
+    if (mounted) setState(() {}); 
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // Gunakan widget.username untuk menampilkan data dari kelas utama [cite: 125]
         title: Text("Logbook: ${widget.username}"),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // SOLUSI ERROR 2: Pastikan IconButton berada di dalam list 'actions'
-        actions: [ 
+        actions: [
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
-              // 1. Munculkan Dialog Konfirmasi [cite: 129]
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
                     title: const Text("Konfirmasi Logout"),
-                    content: const Text("Apakah Anda yakin? Data yang belum disimpan mungkin akan hilang."),
+                    content: const Text("Apakah Anda yakin? Data riwayat tetap tersimpan."),
                     actions: [
                       TextButton(
-                        onPressed: () => Navigator.pop(context), 
+                        onPressed: () => Navigator.pop(context),
                         child: const Text("Batal"),
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.pop(context); 
-                          // 2. Navigasi kembali ke Onboarding & Bersihkan Stack [cite: 129]
+                          Navigator.pop(context);
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(builder: (context) => const OnboardingView()),
@@ -57,22 +65,47 @@ class _CounterViewState extends State<CounterView> {
           ),
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Selamat Datang, ${widget.username}!"),
-            const SizedBox(height: 10),
-            const Text("Total Hitungan Anda:"),
-            Text(
-              '${_controller.value}',
-              style: Theme.of(context).textTheme.headlineLarge,
-            ),
-          ],
-        ),
+      body: Column(
+        children: [
+          const SizedBox(height: 40),
+          Text("Selamat Datang, ${widget.username}!"),
+          const SizedBox(height: 10),
+          const Text("Angka Terakhir Anda:"),
+          Text(
+            '${_controller.value}',
+            style: Theme.of(context).textTheme.headlineLarge,
+          ),
+          const Divider(height: 50, thickness: 1, indent: 20, endIndent: 20),
+          
+          // Bagian Spesifikasi Task 3: Menampilkan History Log
+          const Text("Riwayat Aktivitas", style: TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 10),
+          Expanded(
+            child: _controller.history.isEmpty 
+              ? const Center(child: Text("Belum ada riwayat."))
+              : ListView.builder(
+                  itemCount: _controller.history.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                      child: ListTile(
+                        leading: const Icon(Icons.history_edu),
+                        title: Text(
+                          _controller.history[index],
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => setState(() => _controller.increment()),
+        onPressed: () async {
+          await _controller.increment(widget.username);
+          setState(() {}); 
+        },
         child: const Icon(Icons.add),
       ),
     );
