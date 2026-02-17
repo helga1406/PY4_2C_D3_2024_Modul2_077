@@ -14,7 +14,7 @@ class _LoginViewState extends State<LoginView> {
   final TextEditingController _userController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
 
-  bool _isObscure = true; // Variabel untuk mengontrol visibilitas password
+  bool _isObscure = true; 
 
   void _handleLogin() {
     String user = _userController.text;
@@ -45,7 +45,7 @@ class _LoginViewState extends State<LoginView> {
 
       if (_controller.isLocked) {
         Future.delayed(const Duration(seconds: 10), () {
-          if (mounted) setState(() {}); // Tombol akan jadi aktif lagi otomatis di layar
+          if (mounted) setState(() {}); // Tombol otomatis aktif
         });
       }
 
@@ -71,7 +71,7 @@ class _LoginViewState extends State<LoginView> {
             const SizedBox(height: 15),
             TextField(
               controller: _passController,
-              obscureText: _isObscure, // Mengikuti status variabel _isObscure
+              obscureText: _isObscure, 
               decoration: InputDecoration(
                 labelText: "Password",
                 border: const OutlineInputBorder(),
