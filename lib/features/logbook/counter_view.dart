@@ -19,18 +19,35 @@ class _CounterViewState extends State<CounterView> {
     _initData();
   }
 
-  // Fungsi async
+  // 1. Fungsi Sapaan Dinamis (Homework Poin 3)
+  String _getGreeting() {
+    var hour = DateTime.now().hour;
+    if (hour < 11) return "Selamat Pagi";
+    if (hour < 15) return "Selamat Siang";
+    if (hour < 18) return "Selamat Sore";
+    return "Selamat Malam";
+  }
+
   void _initData() async {
-    await _controller.loadData();
+    // Memasukkan username agar data spesifik per user (Homework Poin 4)
+    await _controller.loadData(widget.username);
     if (mounted) setState(() {}); 
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+    backgroundColor: Colors.white, 
       appBar: AppBar(
-        title: Text("Logbook: ${widget.username}"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(
+          "Logbook: ${widget.username}",
+          style: const TextStyle(
+            color: Colors.white, 
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: const Color.fromARGB(255, 158, 101, 140), 
+        iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -68,31 +85,60 @@ class _CounterViewState extends State<CounterView> {
       body: Column(
         children: [
           const SizedBox(height: 40),
-          Text("Selamat Datang, ${widget.username}!"),
-          const SizedBox(height: 10),
-          const Text("Angka Terakhir Anda:"),
+          Text(
+            "${_getGreeting()}, ${widget.username}!",
+            style: const TextStyle(
+              fontSize: 20, 
+              fontWeight: FontWeight.bold,
+              color: Color.fromARGB(255, 158, 101, 140), 
+            ),
+          ),
+       const Text(
+            "Angka Terakhir Anda:",
+            style: TextStyle(
+              color: Color.fromARGB(221, 175, 133, 149),
+              fontWeight: FontWeight.w500, 
+            ),
+          ),
           Text(
             '${_controller.value}',
-            style: Theme.of(context).textTheme.headlineLarge,
+            style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: const Color.fromARGB(221, 175, 133, 149),
+            ),
           ),
           const Divider(height: 50, thickness: 1, indent: 20, endIndent: 20),
           
-          // Bagian Spesifikasi Task 3: Menampilkan History Log
-          const Text("Riwayat Aktivitas", style: TextStyle(fontWeight: FontWeight.bold)),
+          const Text(
+            "Riwayat Aktivitas", 
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color:Color.fromARGB(255, 158, 101, 140), // Warna ungu tua
+            ),
+          ),
           const SizedBox(height: 10),
           Expanded(
             child: _controller.history.isEmpty 
-              ? const Center(child: Text("Belum ada riwayat."))
+              ? const Center(
+                  child: Text(
+                    "Belum ada riwayat.",
+                    style: TextStyle(color: Color.fromARGB(221, 175, 133, 149)),
+                  ),
+                )
               : ListView.builder(
                   itemCount: _controller.history.length,
                   itemBuilder: (context, index) {
                     return Card(
+                      elevation: 2,
                       margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                       child: ListTile(
-                        leading: const Icon(Icons.history_edu),
+                        leading: const Icon(Icons.history_edu, color: Color.fromARGB(255, 158, 101, 140)),
                         title: Text(
                           _controller.history[index],
-                          style: const TextStyle(fontSize: 12),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Color.fromARGB(255, 158, 101, 140), 
+                          ),
                         ),
                       ),
                     );
@@ -102,6 +148,8 @@ class _CounterViewState extends State<CounterView> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color.fromARGB(255, 158, 101, 140),
+        foregroundColor: Colors.white,
         onPressed: () async {
           await _controller.increment(widget.username);
           setState(() {}); 

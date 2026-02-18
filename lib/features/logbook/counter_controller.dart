@@ -7,11 +7,13 @@ class CounterController {
   int get value => _value;
   List<String> get history => _history;
 
-  // 1. Fungsi Membaca Data 
-  Future<void> loadData() async {
+  // 1. Fungsi Membaca Data (Sekarang menerima parameter username)
+  Future<void> loadData(String username) async {
     final prefs = await SharedPreferences.getInstance();
-    _value = prefs.getInt('last_counter') ?? 0;
-    _history = prefs.getStringList('counter_history') ?? [];
+    
+    // Kunci unik: misal 'admin_last_counter'
+    _value = prefs.getInt('${username}_last_counter') ?? 0; 
+    _history = prefs.getStringList('${username}_counter_history') ?? [];
   }
 
   // 2. Fungsi Menambah & Menyimpan Data 
@@ -20,12 +22,14 @@ class CounterController {
     
     DateTime now = DateTime.now();
     String timeStr = "${now.hour}:${now.minute.toString().padLeft(2, '0')}";
+    
     String logEntry = "User $username menambah ke $_value pada jam $timeStr";
     
     _history.insert(0, logEntry);
 
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('last_counter', _value);
-    await prefs.setStringList('counter_history', _history);
+    
+    await prefs.setInt('${username}_last_counter', _value);
+    await prefs.setStringList('${username}_counter_history', _history);
   }
 }
