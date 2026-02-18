@@ -131,11 +131,30 @@ class _CounterViewState extends State<CounterView> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text("Logout"),
-        content: const Text("Yakin ingin keluar?"),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)), // Dialog lebih melengkung
+        title: const Text("Logout", style: TextStyle(fontWeight: FontWeight.bold)),
+        content: const Text("Yakin ingin keluar dari akun kamu?"),
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text("Batal")),
-          TextButton(
+          // TOMBOL BATAL (Warna abu-abu/netral)
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.grey[300],
+              foregroundColor: Colors.black87,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            ),
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text("Batal"),
+          ),
+          
+          // TOMBOL KELUAR (Warna Pink Ungu seperti tombol Masuk)
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 158, 101, 140),
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+              elevation: 2,
+            ),
             onPressed: () {
               Navigator.pop(ctx);
               if (!mounted) return;
@@ -145,7 +164,7 @@ class _CounterViewState extends State<CounterView> {
                 (route) => false,
               );
             },
-            child: const Text("Keluar", style: TextStyle(color: Colors.red)),
+            child: const Text("Keluar", style: TextStyle(fontWeight: FontWeight.bold)),
           ),
         ],
       ),
