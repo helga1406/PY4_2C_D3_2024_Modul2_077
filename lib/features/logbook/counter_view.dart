@@ -18,7 +18,7 @@ class _CounterViewState extends State<CounterView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("LogBook: Versi SRP"),
+        title: const Text("LogBook: Task 2"),
         backgroundColor: const Color.fromARGB(255, 233, 196, 221),
       ),
       body: SingleChildScrollView(
