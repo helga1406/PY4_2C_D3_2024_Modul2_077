@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:logbook_app_077/features/logbook/counter_controller.dart';
+import 'package:logbook_app_077/features/onboarding/onboarding_view.dart'; 
 
 class CounterView extends StatefulWidget {
- final String username;
-
+  final String username;
   const CounterView({super.key, required this.username});
 
   @override
@@ -18,8 +18,20 @@ class _CounterViewState extends State<CounterView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("LogBook: Task 2"),
-        backgroundColor: const Color.fromARGB(255, 233, 196, 221),
+        // Menampilkan nama user di judul
+        title: Text("Logbook: ${widget.username}", 
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        backgroundColor: const Color.fromARGB(255, 158, 101, 140),
+        iconTheme: const IconThemeData(color: Colors.white),
+        // --- TOMBOL LOGOUT ---
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              _showLogoutDialog();
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -39,7 +51,7 @@ class _CounterViewState extends State<CounterView> {
               Slider(
                 value: _sliderValue, min: 1, max: 20, divisions: 19,
                 label: _sliderValue.round().toString(),
-                activeColor: const Color.fromARGB(255, 167, 89, 142),
+                activeColor: const Color.fromARGB(255, 158, 101, 140),
                 onChanged: (val) => setState(() {
                   _sliderValue = val;
                   _controller.setStep(val.toInt());
@@ -56,30 +68,55 @@ class _CounterViewState extends State<CounterView> {
                     heroTag: "btn_min",
                     backgroundColor: const Color.fromARGB(255, 156, 71, 80),
                     onPressed: () => setState(() => _controller.decrement()),
-                    child: const Icon(Icons.remove, color: Colors.black),
+                    child: const Icon(Icons.remove, color: Colors.white),
                   ),
                   FloatingActionButton(
                     heroTag: "btn_reset",
                     backgroundColor: const Color.fromARGB(255, 175, 172, 147),
                     onPressed: _showResetDialog,
-                    child: const Icon(Icons.refresh, color: Colors.black),
+                    child: const Icon(Icons.refresh, color: Colors.white),
                   ),
                   FloatingActionButton(
                     heroTag: "btn_add",
                     backgroundColor: const Color.fromARGB(255, 83, 121, 84),
                     onPressed: () => setState(() => _controller.increment()),
-                    child: const Icon(Icons.add, color: Colors.black),
+                    child: const Icon(Icons.add, color: Colors.white),
                   ),
                 ],
               ),
 
               const SizedBox(height: 40),
 
-              // 4. Panggil Widget History Terpisah (Clean!)
+              // 4. Panggil Widget History Terpisah
               HistoryListWidget(historyData: _controller.history),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  // Dialog Konfirmasi Logout
+  void _showLogoutDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text("Logout"),
+        content: const Text("Yakin ingin keluar dari akun ini?"),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text("Batal")),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const OnboardingView()),
+                (route) => false,
+              );
+            },
+            child: const Text("Keluar", style: TextStyle(color: Colors.red)),
+          ),
+        ],
       ),
     );
   }
@@ -91,10 +128,7 @@ class _CounterViewState extends State<CounterView> {
         title: const Text("Konfirmasi Reset"),
         content: const Text("Yakin ingin menghapus semua history?"),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text("Batal"),
-          ),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text("Batal")),
           TextButton(
             onPressed: () {
               setState(() => _controller.reset());
@@ -107,7 +141,6 @@ class _CounterViewState extends State<CounterView> {
     );
   }
 }
-
   // --- Tampilan History---
 class HistoryListWidget extends StatelessWidget {
   final List<String> historyData;
