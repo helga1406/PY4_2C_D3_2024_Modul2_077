@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:logbook_app_077/features/auth/login_view.dart'; // Pastikan path ini benar
+import 'package:logbook_app_077/features/auth/login_view.dart';
 
 class OnboardingView extends StatefulWidget {
   const OnboardingView({super.key});
@@ -9,16 +9,32 @@ class OnboardingView extends StatefulWidget {
 }
 
 class _OnboardingViewState extends State<OnboardingView> {
-  // 1. Variabel int step = 1 (Konsep Langkah 1)
   int step = 1;
+
+  // 1. Data Konten Onboarding (Gambar & Deskripsi)
+  final List<Map<String, String>> onboardingData = [
+    {
+      "image": "assets/images/onboarding_1.jpeg",
+      "title": "Catat Aktivitas",
+      "desc": "Simpan setiap progres logbook harianmu dengan mudah.",
+    },
+    {
+      "image": "assets/images/onboarding_2.jpeg",
+      "title": "Keamanan Data",
+      "desc": "Data tersimpan aman di perangkatmu.",
+    },
+    {
+      "image": "assets/images/onboarding_3.jpeg",
+      "title": "Pantau Progres",
+      "desc": "Lihat riwayat aktivitas kapanpun kamu mau.",
+    },
+  ];
 
   void _nextStep() {
     setState(() {
-      // 2. Logika: Jika tombol ditekan, step++
       if (step < 3) {
         step++;
       } else {
-        // 3. Jika step > 3, pindah ke LoginView (Navigator.pushReplacement)
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const LoginView()),
@@ -29,42 +45,71 @@ class _OnboardingViewState extends State<OnboardingView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(  
       backgroundColor: Colors.white,
-      body: Center(
+
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              "Halaman Onboarding",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+            // 2. Gambar sesuai Step
+            Image.asset(
+              onboardingData[step - 1]["image"]!,
+              height: 250,
+              fit: BoxFit.contain,
             ),
-            const SizedBox(height: 20),
-            
-            // Menampilkan angka step saat ini
+            const SizedBox(height: 30),
+
             Text(
-              '$step',
+              onboardingData[step - 1]["title"]!,
               style: const TextStyle(
-                fontSize: 100, 
+                fontSize: 24, 
                 fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 158, 101, 140),
+                color: Color.fromARGB(255, 158, 101, 140), 
               ),
             ),
+            const SizedBox(height: 10),
             
-            const SizedBox(height: 50),
-            
+            Text(
+              onboardingData[step - 1]["desc"]!,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 16,
+                color: Color.fromARGB(221, 175, 133, 149),
+              ),
+            ),
+            const SizedBox(height: 40),
+
+            // 3. Titik-titik posisi halaman
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(3, (index) {
+                return Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  width: step == (index + 1) ? 20 : 10,
+                  height: 10,
+                  decoration: BoxDecoration(
+                    // Kamu juga bisa ganti warna indikator aktif di sini
+                    color: step == (index + 1)
+                        ? const Color.fromARGB(255, 158, 101, 140)
+                        : Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                );
+              }),
+            ),
+            const SizedBox(height: 40),
+
             ElevatedButton(
               onPressed: _nextStep,
               style: ElevatedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 50),
+                // Mengganti warna tombol agar senada dengan teks deskripsi
                 backgroundColor: const Color.fromARGB(255, 158, 101, 140),
                 foregroundColor: Colors.white,
-                minimumSize: const Size(150, 50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
-                ),
               ),
-              // Teks tombol berubah di langkah terakhir
-              child: Text(step < 3 ? "Lanjut" : "Mulai"),
+              child: Text(step < 3 ? "Lanjut" : "Mulai Sekarang"),
             ),
           ],
         ),
