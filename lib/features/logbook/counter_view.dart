@@ -19,27 +19,35 @@ class _CounterViewState extends State<CounterView> {
     _initData();
   }
 
-  // Fungsi memuat data 
   void _initData() async {
     await _controller.loadData(widget.username);
-    if (mounted) setState(() {}); 
+    if (mounted) setState(() {});
+  }
+
+  // Fungsi Sapaan berdasarkan Waktu
+  String getGreeting() {
+    var hour = DateTime.now().hour;
+    if (hour < 11) return "Selamat Pagi";
+    if (hour < 15) return "Selamat Siang";
+    if (hour < 18) return "Selamat Sore";
+    return "Selamat Malam";
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, 
-      
+      backgroundColor: Colors.white,
+
       // 1. App Bar dengan Nama User dan Logout
       appBar: AppBar(
         title: Text(
           "Logbook: ${widget.username}",
           style: const TextStyle(
-            color: Colors.white, 
+            color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: const Color.fromARGB(255, 158, 101, 140), 
+        backgroundColor: const Color.fromARGB(255, 158, 101, 140),
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           IconButton(
@@ -50,7 +58,8 @@ class _CounterViewState extends State<CounterView> {
                 builder: (BuildContext context) {
                   return AlertDialog(
                     title: const Text("Konfirmasi Logout"),
-                    content: const Text("Apakah Anda yakin? Data riwayat tetap tersimpan."),
+                    content: const Text(
+                        "Apakah Anda yakin? Data riwayat tetap tersimpan."),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
@@ -61,11 +70,13 @@ class _CounterViewState extends State<CounterView> {
                           Navigator.pop(context);
                           Navigator.pushAndRemoveUntil(
                             context,
-                            MaterialPageRoute(builder: (context) => const OnboardingView()),
+                            MaterialPageRoute(
+                                builder: (context) => const OnboardingView()),
                             (route) => false,
                           );
                         },
-                        child: const Text("Ya, Keluar", style: TextStyle(color: Colors.red)),
+                        child: const Text("Ya, Keluar",
+                            style: TextStyle(color: Colors.red)),
                       ),
                     ],
                   );
@@ -76,89 +87,82 @@ class _CounterViewState extends State<CounterView> {
         ],
       ),
 
-      // 2. Body 
+      // 2. Body
       body: Column(
         children: [
           const SizedBox(height: 40),
-          
-          // Bagian Sapaan (Mengambil Logika dari Controller)
           Text(
-            "${_controller.getGreeting()}, ${widget.username}!", 
+            "${getGreeting()}, ${widget.username}!",
             style: const TextStyle(
-              fontSize: 20, 
+              fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Color.fromARGB(255, 158, 101, 140), 
+              color: Color.fromARGB(255, 158, 101, 140),
             ),
           ),
-          
           const Text(
             "Angka Terakhir Anda:",
             style: TextStyle(
               color: Color.fromARGB(221, 175, 133, 149),
-              fontWeight: FontWeight.w500, 
+              fontWeight: FontWeight.w500,
             ),
           ),
-          
-          // Angka Counter
           Text(
             '${_controller.value}',
             style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: const Color.fromARGB(221, 175, 133, 149),
-            ),
+                  fontWeight: FontWeight.bold,
+                  color: const Color.fromARGB(221, 175, 133, 149),
+                ),
           ),
-          
           const Divider(height: 50, thickness: 1, indent: 20, endIndent: 20),
-          
-          // Header Riwayat
           const Text(
-            "Riwayat Aktivitas", 
+            "Riwayat Aktivitas",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               color: Color.fromARGB(255, 158, 101, 140),
             ),
           ),
           const SizedBox(height: 10),
-          
-          // List Riwayat
           Expanded(
-            child: _controller.history.isEmpty 
-              ? const Center(
-                  child: Text(
-                    "Belum ada riwayat.",
-                    style: TextStyle(color: Color.fromARGB(221, 175, 133, 149)),
-                  ),
-                )
-              : ListView.builder(
-                  itemCount: _controller.history.length,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      elevation: 2,
-                      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                      child: ListTile(
-                        leading: const Icon(Icons.history_edu, color: Color.fromARGB(255, 158, 101, 140)),
-                        title: Text(
-                          _controller.history[index],
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Color.fromARGB(255, 158, 101, 140), 
+            child: _controller.history.isEmpty
+                ? const Center(
+                    child: Text(
+                      "Belum ada riwayat.",
+                      style: TextStyle(
+                          color: Color.fromARGB(221, 175, 133, 149)),
+                    ),
+                  )
+                : ListView.builder(
+                    itemCount: _controller.history.length,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        elevation: 2,
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 5),
+                        child: ListTile(
+                          leading: const Icon(Icons.history_edu,
+                              color: Color.fromARGB(255, 158, 101, 140)),
+                          title: Text(
+                            _controller.history[index],
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Color.fromARGB(255, 158, 101, 140),
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                ),
+                      );
+                    },
+                  ),
           ),
         ],
       ),
 
-      // 3. Tombol Aksi 
+      // 3. Tombol Tambah
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color.fromARGB(255, 158, 101, 140),
         foregroundColor: Colors.white,
         onPressed: () async {
           await _controller.increment(widget.username);
-          setState(() {}); 
+          setState(() {});
         },
         child: const Icon(Icons.add),
       ),

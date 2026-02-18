@@ -31,13 +31,4 @@ class CounterController {
     await prefs.setInt('${username}_last_counter', _value);
     await prefs.setStringList('${username}_counter_history', _history);
   }
-
-  // 3. Fungsi Logika Sapaan 
-  String getGreeting() {
-    var hour = DateTime.now().hour;
-    if (hour < 11) return "Selamat Pagi";
-    if (hour < 15) return "Selamat Siang";
-    if (hour < 18) return "Selamat Sore";
-    return "Selamat Malam";
-  }
 }
