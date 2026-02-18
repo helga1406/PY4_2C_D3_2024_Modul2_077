@@ -19,15 +19,7 @@ class _CounterViewState extends State<CounterView> {
     _initData();
   }
 
-  // 1. Fungsi Sapaan Dinamis 
-  String _getGreeting() {
-    var hour = DateTime.now().hour;
-    if (hour < 11) return "Selamat Pagi";
-    if (hour < 15) return "Selamat Siang";
-    if (hour < 18) return "Selamat Sore";
-    return "Selamat Malam";
-  }
-
+  // Fungsi memuat data 
   void _initData() async {
     await _controller.loadData(widget.username);
     if (mounted) setState(() {}); 
@@ -36,7 +28,9 @@ class _CounterViewState extends State<CounterView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    backgroundColor: Colors.white, 
+      backgroundColor: Colors.white, 
+      
+      // 1. App Bar dengan Nama User dan Logout
       appBar: AppBar(
         title: Text(
           "Logbook: ${widget.username}",
@@ -81,24 +75,31 @@ class _CounterViewState extends State<CounterView> {
           ),
         ],
       ),
+
+      // 2. Body 
       body: Column(
         children: [
           const SizedBox(height: 40),
+          
+          // Bagian Sapaan (Mengambil Logika dari Controller)
           Text(
-            "${_getGreeting()}, ${widget.username}!",
+            "${_controller.getGreeting()}, ${widget.username}!", 
             style: const TextStyle(
               fontSize: 20, 
               fontWeight: FontWeight.bold,
               color: Color.fromARGB(255, 158, 101, 140), 
             ),
           ),
-       const Text(
+          
+          const Text(
             "Angka Terakhir Anda:",
             style: TextStyle(
               color: Color.fromARGB(221, 175, 133, 149),
               fontWeight: FontWeight.w500, 
             ),
           ),
+          
+          // Angka Counter
           Text(
             '${_controller.value}',
             style: Theme.of(context).textTheme.headlineLarge?.copyWith(
@@ -106,16 +107,20 @@ class _CounterViewState extends State<CounterView> {
               color: const Color.fromARGB(221, 175, 133, 149),
             ),
           ),
+          
           const Divider(height: 50, thickness: 1, indent: 20, endIndent: 20),
           
+          // Header Riwayat
           const Text(
             "Riwayat Aktivitas", 
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              color:Color.fromARGB(255, 158, 101, 140), // Warna ungu tua
+              color: Color.fromARGB(255, 158, 101, 140),
             ),
           ),
           const SizedBox(height: 10),
+          
+          // List Riwayat
           Expanded(
             child: _controller.history.isEmpty 
               ? const Center(
@@ -146,6 +151,8 @@ class _CounterViewState extends State<CounterView> {
           ),
         ],
       ),
+
+      // 3. Tombol Aksi 
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color.fromARGB(255, 158, 101, 140),
         foregroundColor: Colors.white,
