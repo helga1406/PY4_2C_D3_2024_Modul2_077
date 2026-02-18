@@ -17,14 +17,20 @@ class _CounterViewState extends State<CounterView> {
   @override
   void initState() {
     super.initState();
-
-    // 1. Memuat data terakhir saat aplikasi dibuka
     _loadStoredData();
   }
 
   void _loadStoredData() async {
     await _controller.loadData(widget.username);
     if (mounted) setState(() {});
+  }
+  
+  String getGreeting() {
+    var hour = DateTime.now().hour;
+    if (hour < 11) return "Selamat Pagi";
+    if (hour < 15) return "Selamat Siang";
+    if (hour < 18) return "Selamat Sore";
+    return "Selamat Malam";
   }
 
   @override
@@ -38,7 +44,7 @@ class _CounterViewState extends State<CounterView> {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: _showLogoutDialog, // Pemanggilan fungsi diperingkas
+            onPressed: _showLogoutDialog, 
           ),
         ],
       ),
@@ -47,15 +53,14 @@ class _CounterViewState extends State<CounterView> {
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              // Welcome Banner Sederhana agar fokus ke Task 3
               Text(
-                "User: ${widget.username}",
-                style: const TextStyle(
-                  fontSize: 22, 
-                  fontWeight: FontWeight.bold,
-                  color: Color.fromARGB(255, 158, 101, 140),
-                ),
+              "${getGreeting()}, ${widget.username}!", 
+              style: const TextStyle(
+                fontSize: 22, 
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 158, 101, 140),
               ),
+            ),
               const SizedBox(height: 20),
 
               const Text("Total Hitungan:", style: TextStyle(fontSize: 18)),
@@ -63,9 +68,14 @@ class _CounterViewState extends State<CounterView> {
                   style: const TextStyle(fontSize: 60, fontWeight: FontWeight.bold)),
 
               const SizedBox(height: 30),
-
-              Text("Atur Nilai Step: ${_sliderValue.round()}",
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              Text(
+                "Atur Nilai Step: ${_sliderValue.round()}",
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold, 
+                  fontSize: 16,
+                  color: Color.fromARGB(255, 158, 101, 140), 
+                ),
+              ),
               Slider(
                 value: _sliderValue, min: 1, max: 20, divisions: 19,
                 label: _sliderValue.round().toString(),

@@ -14,7 +14,6 @@ class CounterController {
   // 1. Fungsi Memuat Data (Persistence)
   Future<void> loadData(String username) async {
     final prefs = await SharedPreferences.getInstance();
-    // Mengambil data berdasarkan username agar data admin dan budi berbeda
     _counter = prefs.getInt('${username}_counter') ?? 0;
     _history = prefs.getStringList('${username}_history') ?? [];
   }
@@ -31,7 +30,6 @@ class CounterController {
     DateTime now = DateTime.now();
     String jam = "${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}";
     
-    // Format sesuai spesifikasi: "User admin menambah +5 pada jam 10:00"
     String pesan = "User $username $aksi pada jam $jam";
 
     _history.insert(0, pesan);
@@ -40,7 +38,7 @@ class CounterController {
     }
   }
 
-  // --- LOGIKA TOMBOL (Ditambahkan async/await untuk simpan data) ---
+  // --- LOGIKA TOMBOL---
   Future<void> increment(String username) async {
     _counter += _step;
     _addHistory(username, "menambah +$_step");
