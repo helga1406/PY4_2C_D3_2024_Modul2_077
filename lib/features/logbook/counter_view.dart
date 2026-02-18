@@ -19,7 +19,7 @@ class _CounterViewState extends State<CounterView> {
     _initData();
   }
 
-  // 1. Fungsi Sapaan Dinamis (Homework Poin 3)
+  // 1. Fungsi Sapaan Dinamis 
   String _getGreeting() {
     var hour = DateTime.now().hour;
     if (hour < 11) return "Selamat Pagi";
@@ -29,7 +29,6 @@ class _CounterViewState extends State<CounterView> {
   }
 
   void _initData() async {
-    // Memasukkan username agar data spesifik per user (Homework Poin 4)
     await _controller.loadData(widget.username);
     if (mounted) setState(() {}); 
   }
