@@ -175,11 +175,27 @@ class _CounterViewState extends State<CounterView> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text("Konfirmasi Reset"),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        title: const Text("Konfirmasi Reset", style: TextStyle(fontWeight: FontWeight.bold)),
         content: const Text("Yakin ingin menghapus semua history?"),
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text("Batal")),
-          TextButton(
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.grey[300],
+              foregroundColor: Colors.black87,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            ),
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text("Batal"),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 158, 101, 140),
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+              elevation: 2,
+            ),
             onPressed: () async {
               final navigator = Navigator.of(ctx); 
               await _controller.reset(widget.username);       
@@ -187,7 +203,7 @@ class _CounterViewState extends State<CounterView> {
               setState(() {});
               navigator.pop(); 
             },
-            child: const Text("Ya, Reset", style: TextStyle(color: Colors.red)),
+            child: const Text("Ya, Reset", style: TextStyle(fontWeight: FontWeight.bold)),
           ),
         ],
       ),
