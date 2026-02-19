@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:logbook_app_077/features/logbook/counter_controller.dart';
-import 'package:logbook_app_077/features/onboarding/onboarding_view.dart'; 
+import 'package:logbook_app_077/features/auth/login_view.dart';
 
 class CounterView extends StatefulWidget {
   final String username;
@@ -131,12 +131,12 @@ class _CounterViewState extends State<CounterView> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)), // Dialog lebih melengkung
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)), 
         title: const Text("Logout", style: TextStyle(fontWeight: FontWeight.bold)),
         content: const Text("Yakin ingin keluar dari akun kamu?"),
         actionsPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         actions: [
-          // TOMBOL BATAL (Warna abu-abu/netral)
+          // TOMBOL BATAL 
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.grey[300],
@@ -147,7 +147,7 @@ class _CounterViewState extends State<CounterView> {
             child: const Text("Batal"),
           ),
           
-          // TOMBOL KELUAR (Warna Pink Ungu seperti tombol Masuk)
+          // TOMBOL KELUAR 
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color.fromARGB(255, 158, 101, 140),
@@ -158,9 +158,10 @@ class _CounterViewState extends State<CounterView> {
             onPressed: () {
               Navigator.pop(ctx);
               if (!mounted) return;
+              
               Navigator.pushAndRemoveUntil(
                 context, 
-                MaterialPageRoute(builder: (context) => const OnboardingView()),
+                MaterialPageRoute(builder: (context) => const LoginView()), 
                 (route) => false,
               );
             },
