@@ -9,9 +9,10 @@ class OnboardingView extends StatefulWidget {
 }
 
 class _OnboardingViewState extends State<OnboardingView> {
+  final PageController _pageController = PageController();
   int step = 1;
 
-  // 1. Data Konten Onboarding (Gambar & Deskripsi)
+  // 1. Data Onboarding 
   final List<Map<String, String>> onboardingData = [
     {
       "image": "assets/images/onboarding_1.jpeg",
@@ -45,41 +46,60 @@ class _OnboardingViewState extends State<OnboardingView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(  
+    return Scaffold(
       backgroundColor: Colors.white,
-
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // 2. Gambar sesuai Step
-            Image.asset(
-              onboardingData[step - 1]["image"]!,
-              height: 250,
-              fit: BoxFit.contain,
-            ),
-            const SizedBox(height: 30),
+            SizedBox(
+              height: 400,
+              child: PageView.builder(
+                controller: _pageController,
+                itemCount: onboardingData.length,
+                onPageChanged: (index) {
+                  setState(() {
+                    step = index + 1;
+                  });
+                },
+                itemBuilder: (context, index) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
 
-            Text(
-              onboardingData[step - 1]["title"]!,
-              style: const TextStyle(
-                fontSize: 24, 
-                fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 158, 101, 140), 
+                      // 2. Gambar sesuai Step
+                      Image.asset(
+                        onboardingData[index]["image"]!,
+                        height: 250,
+                        fit: BoxFit.contain,
+                      ),
+                      const SizedBox(height: 30),
+                      Text(
+                        onboardingData[index]["title"]!,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 158, 101, 140),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        onboardingData[index]["desc"]!,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Color.fromARGB(221, 175, 133, 149),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
-            const SizedBox(height: 10),
-            
-            Text(
-              onboardingData[step - 1]["desc"]!,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 16,
-                color: Color.fromARGB(221, 175, 133, 149),
-              ),
+            const SizedBox(
+              height: 10,
             ),
-            const SizedBox(height: 40),
 
             // 3. Titik-titik posisi halaman
             Row(
@@ -90,7 +110,6 @@ class _OnboardingViewState extends State<OnboardingView> {
                   width: step == (index + 1) ? 20 : 10,
                   height: 10,
                   decoration: BoxDecoration(
-                    // Kamu juga bisa ganti warna indikator aktif di sini
                     color: step == (index + 1)
                         ? const Color.fromARGB(255, 158, 101, 140)
                         : Colors.grey.shade300,
@@ -99,15 +118,22 @@ class _OnboardingViewState extends State<OnboardingView> {
                 );
               }),
             ),
-            const SizedBox(height: 40),
+
+            const SizedBox(
+              height: 40,
+            ), 
 
             ElevatedButton(
               onPressed: _nextStep,
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 50),
-                // Mengganti warna tombol agar senada dengan teks deskripsi
                 backgroundColor: const Color.fromARGB(255, 158, 101, 140),
                 foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                    25,
+                  ), // Sedikit lebih bulat agar estetik
+                ),
               ),
               child: Text(step < 3 ? "Lanjut" : "Mulai Sekarang"),
             ),
