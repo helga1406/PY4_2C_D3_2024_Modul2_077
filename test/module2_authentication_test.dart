@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-// Sesuaikan path import ini dengan lokasi file login_controller.dart kamu
 import 'package:logbook_app_077/features/auth/login_controller.dart'; 
 
 void main() {
