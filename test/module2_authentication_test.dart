@@ -14,7 +14,7 @@ void main() {
       controller = LoginController();
     });
 
-    // Sesuai TC11 di Excel
+    // Sesuai TC01 di Excel
     test('login berhasil dengan kredensial yang valid', () {
       // (2) exercise (act, operate)
       actual1 = controller.login("helga", "polban2026");
@@ -28,7 +28,7 @@ void main() {
       expect(actual2, expected2, reason: 'Expected $expected2 but got $actual2');
     });
 
-    // Sesuai TC12 di Excel
+    // Sesuai TC02 di Excel
     test('login gagal dan attempts bertambah jika password salah', () {
       // (2) exercise (act, operate)
       actual1 = controller.login("helga", "salahpass");
@@ -42,7 +42,7 @@ void main() {
       expect(actual2, expected2, reason: 'Expected $expected2 but got $actual2');
     });
 
-    // Sesuai TC13 di Excel
+    // Sesuai TC03 di Excel
     test('akun terkunci (isLocked) setelah 3 kali gagal login', () {
       // (2) exercise (act, operate)
       controller.login("helga", "salahpass"); // gagal 1
