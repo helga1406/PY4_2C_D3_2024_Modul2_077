@@ -6,7 +6,7 @@ void main() {
   dynamic actual1, expected1;
   dynamic actual2, expected2;
 
-  group('Modul 2 - LoginController (Test)', () {
+  group('Modul 2 - Authentication (Test)', () {
     late LoginController controller;
 
     setUp(() {
